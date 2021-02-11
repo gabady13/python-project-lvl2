@@ -5,7 +5,7 @@ build:
 	poetry build
 
 publish:
-	poetry publish -r tatoxer_gendiff
+	poetry publish -r gendiff
 
 lint:
 	poetry run flake8 brain_games
