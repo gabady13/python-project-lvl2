@@ -15,3 +15,6 @@ package-install:
 
 package-uninstall:
 	pip uninstall hexlet-code
+
+help:
+	poetry run python -m gendiff.scripts.gendiff --h
