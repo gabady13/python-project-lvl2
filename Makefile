@@ -18,3 +18,6 @@ package-uninstall:
 
 help:
 	poetry run python -m gendiff.scripts.gendiff --h
+
+test:
+	poetry run pytest gendiff/tests/generate_test.py

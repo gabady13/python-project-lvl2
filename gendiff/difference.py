@@ -9,14 +9,14 @@ def format_key(key, form):
 
 def generate_diff(first_file, second_file):
     result = {}
-    for key in first_file.keys() - second_file.keys():
+    for key in sorted(first_file.keys() - second_file.keys()):
         result[format_key(key, REMOVED)] = first_file[key]
-    for key in first_file.keys() & second_file.keys():
+    for key in sorted(first_file.keys() & second_file.keys()):
         if first_file[key] == second_file[key]:
             result[format_key(key, NON_CHANGED)] = first_file[key]
         else:
             result[format_key(key, REMOVED)] = first_file[key]
             result[format_key(key, ADDED)] = second_file[key]
-    for key in second_file.keys() - first_file.keys():
+    for key in sorted(second_file.keys() - first_file.keys()):
         result[format_key(key, ADDED)] = second_file[key]
     return result

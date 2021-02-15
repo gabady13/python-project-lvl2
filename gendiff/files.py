@@ -3,10 +3,10 @@ import json
 
 
 def read_file(file):
-    file = os. path.abspath(file)
-    file_format = os.path.splitext(file)
-    file_format = file_format[1].lower()
+    abs_path = os.path.abspath(file)
+    _, extension = os.path.splitext(abs_path)
     result = ''
-    if file_format == '.json':
-        result = json.load(open(file))
+    with open(abs_path, 'r') as file_descriptor:
+        if extension == '.json':
+            result = json.load(file_descriptor)
     return result
