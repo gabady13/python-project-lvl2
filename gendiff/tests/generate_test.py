@@ -10,6 +10,7 @@ FILE2 = "gendiff/tests/fixtures/filepath2.json"
 # Answer files
 ANSWER = "gendiff/tests/fixtures/answer.txt"
 
+
 TEST_DATA = [
     (FILE1, FILE2, ANSWER)
 ]
