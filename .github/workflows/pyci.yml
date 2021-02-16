@@ -24,10 +24,3 @@ jobs:
       - name: Run linter
         run: |
           make lint
-      - name: Run Tests
-        uses: paambaati/codeclimate-action@v2.7.4
-        with:
-          coverageCommand: make test
-          debug: true
-        env:
-          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
