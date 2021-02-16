@@ -3,12 +3,12 @@ from gendiff.files import read_file
 
 
 # Test files
-FILE1 = "gendiff/tests/fixtures/filepath1.json"
-FILE2 = "gendiff/tests/fixtures/filepath2.json"
+FILE1 = '.tests/fixtures/filepath1.json'
+FILE2 = '.tests/fixtures/filepath2.json'
 
 
 # Answer files
-ANSWER = "gendiff/tests/fixtures/answer.txt"
+ANSWER = '.tests/fixtures/answer.txt'
 
 
 TEST_DATA = [
@@ -28,5 +28,4 @@ def test():
         file_two = read_file(file2)
         expected = read_txt(answer)
         result = generate_diff(file_one, file_two)
-        print(result)
         assert str(result) == expected
