@@ -20,4 +20,4 @@ help:
 	poetry run python -m gendiff.scripts.gendiff --h
 
 test:
-	poetry run pytest tests
+	poetry run pytest -vv -cov=gendiff --cov-report xml tests
