@@ -3,12 +3,12 @@ from gendiff.files import read_file
 
 
 # Test files
-FILE1 = '.tests/fixtures/filepath1.json'
-FILE2 = '.tests/fixtures/filepath2.json'
+FILE1 = 'tests/fixtures/filepath1.json'
+FILE2 = 'tests/fixtures/filepath2.json'
 
 
 # Answer files
-ANSWER = '.tests/fixtures/answer.txt'
+ANSWER = 'tests/fixtures/answer.txt'
 
 
 TEST_DATA = [
@@ -22,7 +22,7 @@ def read_txt(path_to_file):
     return expected.strip()
 
 
-def test():
+def test_txt():
     for (file1, file2, answer) in TEST_DATA:
         file_one = read_file(file1)
         file_two = read_file(file2)
