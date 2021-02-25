@@ -27,5 +27,5 @@ def test_txt():
         file_one = read_file(file1)
         file_two = read_file(file2)
         expected = read_txt(answer)
-        result = generate_diff(file_one, file_two)
-        assert str(result) == expected
+        result = str(generate_diff(file_one, file_two))
+        assert result == expected
