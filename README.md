@@ -10,3 +10,6 @@
 
 ### plain json
 [![asciicast](https://asciinema.org/a/3bX0cMTdWjLcncXAHVS2SVgEA.svg)](https://asciinema.org/a/3bX0cMTdWjLcncXAHVS2SVgEA)
+
+### plain yaml
+[![asciicast](https://asciinema.org/a/394589.svg)](https://asciinema.org/a/394589)
