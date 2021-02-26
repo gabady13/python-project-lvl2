@@ -3,9 +3,9 @@ import json
 import yaml
 
 FORMATS = {
-    "json": "json",
-    "yml": "yml",
-    "yaml": "yaml"
+    "json": ".json",
+    "yml": ".yml",
+    "yaml": ".yaml"
 }
 
 
