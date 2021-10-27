@@ -8,8 +8,11 @@
 [![Actions Status](https://github.com/gabady13/python-project-lvl2/workflows/Python%20CI/badge.svg)](https://github.com/gabady13/python-project-lvl2/actions)
 
 
-### plain json
+### step 4
 [![asciicast](https://asciinema.org/a/3bX0cMTdWjLcncXAHVS2SVgEA.svg)](https://asciinema.org/a/3bX0cMTdWjLcncXAHVS2SVgEA)
 
-### plain yaml
+### step 5
 [![asciicast](https://asciinema.org/a/394589.svg)](https://asciinema.org/a/394589)
+
+### step 6
+[![asciicast](https://asciinema.org/a/HQzHmJntDMGza5XFOqWxFc2e5.svg)](https://asciinema.org/a/HQzHmJntDMGza5XFOqWxFc2e5)
