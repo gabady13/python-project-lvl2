@@ -16,3 +16,6 @@
 
 ### step 6
 [![asciicast](https://asciinema.org/a/HQzHmJntDMGza5XFOqWxFc2e5.svg)](https://asciinema.org/a/HQzHmJntDMGza5XFOqWxFc2e5)
+
+### step 7
+[![asciicast](https://asciinema.org/a/9r1w5pyubtarbxygibscGu1xw.svg)](https://asciinema.org/a/9r1w5pyubtarbxygibscGu1xw)
