@@ -1,13 +1,4 @@
-#!/usr/bin/env python3
-import sys
 import argparse
-from gendiff.engine.compare_files import generate_diff
-
-
-def main():
-    args = parse_args(sys.argv[1:])
-    res = generate_diff(args.first_file, args.second_file, args.format)
-    print(res)
 
 
 def parse_args(args):

@@ -42,3 +42,6 @@ run7stylish:
 
 run7plain:
 	poetry run gendiff --format plain tests/fixtures/step6/original.json tests/fixtures/step6/modified.json
+
+run8:
+	poetry run gendiff --format json tests/fixtures/step6/original.json tests/fixtures/step6/modified.json
