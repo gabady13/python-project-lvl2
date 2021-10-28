@@ -1,5 +1,5 @@
 from os import path
-from gendiff.parsers import parse_files
+from gendiff.parsers import parse
 from gendiff.formatters.formatter_plain import get_plain
 from tests.test_step6 import FIXTURES_DIR_6
 
@@ -10,7 +10,7 @@ def get_diff():
     current_dir = path.dirname(__file__)
     file_original = path.join(current_dir, FIXTURES_DIR_6, 'original.json')
     file_modified = path.join(current_dir, FIXTURES_DIR_6, 'modified.json')
-    diff = parse_files(file_original, file_modified)
+    diff = parse(file_original, file_modified)
     # print(diff)
     return diff
 
