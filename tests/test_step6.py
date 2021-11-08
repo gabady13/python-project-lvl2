@@ -6,8 +6,8 @@ FIXTURES_DIR_6 = 'fixtures/step6'
 
 
 def test_parse_args():
-    params = {'first_file': 'file1',
-              'second_file': 'file2',
+    params = {'first_file': 'original',
+              'second_file': 'modified',
               'format': 'stylish'}
     args = parse_args(['--format', params['format'],
                        params['first_file'],
