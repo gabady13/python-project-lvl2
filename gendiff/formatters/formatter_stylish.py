@@ -1,5 +1,5 @@
 from operator import itemgetter
-import gendiff.gendiff as generate_diff
+import gendiff.gendiff as gendiff
 
 
 def get_stylish(diff):
@@ -11,25 +11,18 @@ def get_stylish(diff):
 
 def diff_to_uniform_dict(diff):
     res = {}
-    for key, key_description in diff.items():
-        res.update(parse_key_description(key, key_description))
-    return res
+    current_key = diff[gendiff.KEY_KEY]
 
+    if gendiff.KEY_CHILDREN not in diff:
+        for status, value in diff[gendiff.KEY_VALUE].items():
+            res[status, current_key] = value
+        return res
 
-def parse_key_description(key, key_description):
-    res = {}
-    if generate_diff.KEY_CHILDREN in key_description:
-        children = key_description[generate_diff.KEY_CHILDREN]
-        value = diff_to_uniform_dict(children)
-        res[generate_diff.STATUS_STAY, key] = value
-    else:
-        key_status = key_description[generate_diff.KEY_STATUS]
-        value = key_description[generate_diff.KEY_VALUE]
-        if key_status == generate_diff.STATUS_CHANGE:
-            res[generate_diff.STATUS_DEL, key] = value[generate_diff.STATUS_DEL]
-            res[generate_diff.STATUS_NEW, key] = value[generate_diff.STATUS_NEW]
-        else:
-            res[key_status, key] = value
+    for child in diff[gendiff.KEY_CHILDREN]:
+        res.update(diff_to_uniform_dict(child))
+
+    if current_key:
+        res = {(gendiff.VALUE_STAY, current_key): res}
     return res
 
 
@@ -45,16 +38,17 @@ def stylish_to_list(data, level=2):
             res = res + stylish_to_list(value, level + 4)
             res.append('{}  {}'.format(shift, '}'))
         else:
-            formatted_value = format_value(value)
+            formatted_value = to_string(value)
             res.append('{}{}:{}'.format(shift, formatted_key, formatted_value))
     return res
 
 
 def format_key(key):
     if isinstance(key, tuple):
-        sign = {generate_diff.STATUS_DEL: '-',
-                generate_diff.STATUS_NEW: '+',
-                generate_diff.STATUS_STAY: ' '}[key[0]]
+        sign = {gendiff.VALUE_DEL: '-',
+                gendiff.VALUE_NEW: '+',
+                gendiff.VALUE_STAY: ' '}[key[0]]
+
         key_single = key[1]
     else:
         sign = ' '
@@ -62,7 +56,7 @@ def format_key(key):
     return '{} {}'.format(sign, key_single)
 
 
-def format_value(value):
+def to_string(value):
     shift = ' '
     if value is True:
         value = 'true'

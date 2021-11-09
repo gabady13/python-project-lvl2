@@ -1,33 +1,33 @@
-import gendiff.gendiff as generate_diff
+import gendiff.gendiff as gendiff
+
+DESCR_TEMPLATE = {
+    gendiff.STATUS_CHANGE: 'was updated. From {_DEL_} to {_NEW_}',
+    gendiff.STATUS_DEL: 'was removed',
+    gendiff.STATUS_NEW: 'was added with value: {_NEW_}'}
 
 
 def get_plain(diff):
-    plain_dict = diff_to_list(diff)
-    return '\n'.join(plain_dict)
+    plain = diff_to_list(diff, '')
+    res = '\n'.join(plain)
+    return res
 
 
 def diff_to_list(diff, prefix=''):
     res = []
-    for key, key_description in diff.items():
-        res += parse_key_description(key, key_description, prefix)
+    new_prefix = get_new_prefix(prefix, diff[gendiff.KEY_KEY])
+    if gendiff.KEY_CHILDREN not in diff:
+        values_to_string = {k: to_string(v) for k, v in
+                            diff[gendiff.KEY_VALUE].items()}
+
+        descr = DESCR_TEMPLATE.get(diff[gendiff.KEY_STATUS],
+                                   '').format(**values_to_string)
+        return ['{}\'{}\' {}'.format('Property ', new_prefix, descr)]
+
+    children = filter(lambda key_descr: gendiff.STATUS_STAY != key_descr.get(
+        gendiff.KEY_STATUS, None), diff[gendiff.KEY_CHILDREN])
+    for child in children:
+        res += diff_to_list(child, new_prefix)
     res.sort()
-    return res
-
-
-def parse_key_description(key, key_description, prefix):
-    res = []
-    if generate_diff.KEY_CHILDREN in key_description:
-        children = key_description[generate_diff.KEY_CHILDREN]
-        children_keys = diff_to_list(children, get_new_prefix(prefix, key))
-        res += children_keys
-    else:
-        key_status = key_description[generate_diff.KEY_STATUS]
-        if key_status != generate_diff.STATUS_STAY:
-            value = key_description[generate_diff.KEY_VALUE]
-            full_key = get_new_prefix(prefix, key)
-            res.append('{}\'{}\' {}'.format('Property ', full_key,
-                                            format_description(key_status,
-                                                               value)))
     return res
 
 
@@ -37,20 +37,7 @@ def get_new_prefix(prefix, key):
     return '{}.{}'.format(prefix, key)
 
 
-def format_description(key_status, key_value):
-    res = ''
-    if key_status == generate_diff.STATUS_CHANGE:
-        res = 'was updated. From {} to {}'.format(
-            format_value(key_value[generate_diff.STATUS_DEL]),
-            format_value(key_value[generate_diff.STATUS_NEW]))
-    elif key_status == generate_diff.STATUS_DEL:
-        res = 'was removed'
-    elif key_status == generate_diff.STATUS_NEW:
-        res = 'was added with value: {}'.format(format_value(key_value))
-    return res
-
-
-def format_value(value):
+def to_string(value):
     if isinstance(value, dict):
         res = '[complex value]'
     elif isinstance(value, str):

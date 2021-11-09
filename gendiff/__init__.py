@@ -1,3 +1,2 @@
 # -*- coding:utf-8 -*-
-
-"""Example project."""
+from gendiff.gendiff import generate_diff  # noqa: F401

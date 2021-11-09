@@ -1,76 +1,83 @@
-from gendiff.compare_files import open_file
-from gendiff.parsers import parse
-from gendiff.formatters.make_format import make_format
+import gendiff.reading as reading
+import gendiff.parsers as parsers
 
-KEY_NAME = '_KEY_NAME_'
-KEY_STATUS = '_KEY_STATUS_'
-KEY_VALUE = '_KEY_VALUE_'
-KEY_CHILDREN = '_KEY_CHILDREN_'
-STATUS_NEW = '_NEW_'
-STATUS_DEL = '_DEL_'
+KEY_KEY = '_KEY_'
+KEY_STATUS = '_STATUS_'
+KEY_VALUE = '_VALUE_'
+KEY_CHILDREN = '_CHILDREN_'
 STATUS_STAY = '_STAY_'
+STATUS_DEL = '_DEL_'
+STATUS_NEW = '_NEW_'
 STATUS_CHANGE = '_CHANGE_'
+VALUE_STAY = '_STAY_'
+VALUE_DEL = '_DEL_'
+VALUE_NEW = '_NEW_'
+
+from gendiff.formatters.make_format import format_diff  # noqa: E402
 
 
 def generate_diff(file_old, file_new, out_format='stylish'):
-    data_source_old, format_old = open_file(file_old)
-    data_source_new, format_new = open_file(file_new)
+    data_old = get_data(file_old)
+    data_new = get_data(file_new)
 
-    data_old = parse(data_source_old, format_old)
-    data_new = parse(data_source_new, format_new)
-
-    diff = []
-    if data_old is not None and data_new is not None:
-        inner_diff = compare_data(data_old, data_new)
-        diff = make_format(inner_diff, out_format)
+    inner_diff = get_inner_diff(data_old, data_new)
+    diff = format_diff(inner_diff, out_format)
 
     return diff
 
 
-def compare_data(old_data, new_data):
-    res = {}
+def get_data(source):
+    parser = get_parser(source)
+    data = reading.read_file(source)
+    if not data:
+        raise ValueError('empty data in: {}'.format(source))
+    parsed = parser(data)
+    return parsed
+
+
+def get_inner_diff(old_data, new_data, root_key=''):
+    children = []
     old_keys = set(old_data.keys())
     new_keys = set(new_data.keys())
     for key in new_keys - old_keys:
-        res[key] = make_key_description(STATUS_NEW, new_data[key])
+        children.append({KEY_KEY: key,
+                         KEY_STATUS: STATUS_NEW,
+                         KEY_VALUE: {VALUE_NEW: new_data[key]}})
     for key in old_keys - new_keys:
-        res[key] = make_key_description(STATUS_DEL, old_data[key])
+        children.append({KEY_KEY: key,
+                         KEY_STATUS: STATUS_DEL,
+                         KEY_VALUE: {VALUE_DEL: old_data[key]}})
     for key in old_keys & new_keys:
         if isinstance(old_data[key], dict) and isinstance(new_data[key],
                                                           dict):
-            res[key] = get_node(old_data, new_data, key)
+            stay_key = get_inner_diff(old_data[key], new_data[key], key)
         else:
-            res[key] = get_simple_key(old_data[key], new_data[key])
+            stay_key = {KEY_KEY: key}
+            if old_data[key] == new_data[key]:
+                stay_key.update({KEY_STATUS: STATUS_STAY,
+                                 KEY_VALUE: {VALUE_STAY: old_data[key]}})
+            else:
+                stay_key.update({KEY_STATUS: STATUS_CHANGE,
+                                 KEY_VALUE: {VALUE_DEL: old_data[key],
+                                             VALUE_NEW: new_data[key]}})
+
+        children.append(stay_key)
+        children.sort(key=get_key)
+
+    res = {KEY_KEY: root_key,
+           KEY_CHILDREN: children}
     return res
 
 
-def get_node(old_data, new_data, key):
-    children = compare_data(old_data[key], new_data[key])
-    res = make_key_description(children=children)
-    return res
+def get_key(inner_diff):
+    return inner_diff[KEY_KEY]
 
 
-def get_simple_key(old_value, new_value):
-    if old_value == new_value:
-        res = make_key_description(key_status=STATUS_STAY,
-                                   key_value=old_value)
+def get_parser(file_path):
+    if '.json' in file_path:
+        parser = parsers.parse_json
+    elif '.yml' in file_path:
+        parser = parsers.parse_yaml
     else:
-        res = make_key_description(key_status=STATUS_CHANGE,
-                                   key_value={STATUS_DEL: old_value,
-                                              STATUS_NEW: new_value})
-    return res
-
-
-def make_key_description(key_status=None, key_value=None, children=None):
-    res = {}
-    if key_status is not None:
-        res[KEY_STATUS] = key_status
-    if key_value is not None:
-        res[KEY_VALUE] = key_value
-    if children is not None:
-        res[KEY_CHILDREN] = children
-    return res
-
-
-def have_children(key_description):
-    return KEY_CHILDREN in key_description
+        raise ValueError('can\'t detect format for: {}'.format(file_path))
+    return parser

@@ -22,26 +22,3 @@ help:
 
 test:
 	poetry run pytest -vv --cov=gendiff --cov-report xml tests
-
-run4:
-	poetry run gendiff -f j tests/fixtures/step4/original.json tests/fixtures/step4/modified.json
-	poetry run gendiff tests/fixtures/step4/original.json tests/fixtures/step4/modified.json
-
-run5:
-	poetry run gendiff -f j tests/fixtures/step5/original.yml tests/fixtures/step5/modified.yml
-	poetry run gendiff tests/fixtures/step5/original.yml tests/fixtures/step5/modified.yml
-
-run6json:
-	poetry run gendiff tests/fixtures/step6/original.json tests/fixtures/step6/modified.json
-
-run6yml:
-	poetry run gendiff tests/fixtures/step6/original.yml tests/fixtures/step6/modified.yml
-
-run7stylish:
-	poetry run gendiff --format stylish tests/fixtures/step6/original.json tests/fixtures/step6/modified.json
-
-run7plain:
-	poetry run gendiff --format plain tests/fixtures/step6/original.json tests/fixtures/step6/modified.json
-
-run8:
-	poetry run gendiff --format json tests/fixtures/step6/original.json tests/fixtures/step6/modified.json

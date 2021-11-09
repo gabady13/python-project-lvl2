@@ -3,12 +3,13 @@ from gendiff.formatters.formatter_plain import get_plain
 from gendiff.formatters.formatter_json import get_json
 
 
-def make_format(inner_diff, out_format):
-    diff = '{} is {}'.format(out_format, 'unknown format')
+def format_diff(inner_diff, out_format):
     if out_format == 'stylish':
         diff = get_stylish(inner_diff)
-    if out_format == 'plain':
+    elif out_format == 'plain':
         diff = get_plain(inner_diff)
-    if out_format == 'json':
+    elif out_format == 'json':
         diff = get_json(inner_diff)
+    else:
+        raise ValueError('{} is unknown format'.format(out_format))
     return diff
