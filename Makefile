@@ -17,8 +17,5 @@ package-install:
 package-uninstall:
 	pip uninstall hexlet-code
 
-help:
-	poetry run python -m gendiff.scripts.gendiff_script --h
-
 test:
 	poetry run pytest -vv --cov=gendiff --cov-report xml tests
