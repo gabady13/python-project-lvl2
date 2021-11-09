@@ -71,7 +71,7 @@ def test_format_json():
                         path_current(NESTED_JSON_DIR, 'modified.json'),
                         'json')
     j1 = json.loads(res)
-    j2 = json.load(open(path_current('json_diff.json')))
+    j2 = json.load(open(path_current('json_result.json')))
     assert j1 == j2
 
 
