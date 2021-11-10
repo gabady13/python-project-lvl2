@@ -21,10 +21,6 @@ SET_TESTING_DATA = [
     (PLAIN_YML_DIR, 'original.yml', 'modified.yml',
      'styl_plain_result.txt', 'stylish'),
     (NESTED_JSON_DIR, 'original.json', 'modified.json',
-     'styl_nested_result.txt', 'stylish'),
-    (NESTED_YML_DIR, 'original.yml', 'modified.yml',
-     'styl_nested_result.txt', 'stylish'),
-    (NESTED_JSON_DIR, 'original.json', 'modified.json',
      'plain_result.txt', 'plain')]
 
 
