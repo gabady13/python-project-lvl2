@@ -19,3 +19,6 @@ package-uninstall:
 
 test:
 	poetry run pytest -vv --cov=gendiff --cov-report xml tests
+
+run-test:
+	poetry run gendiff --format stylish tests/fixtures/nested_json/original.json tests/fixtures/nested_json/modified.json
