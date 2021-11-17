@@ -1,6 +1,5 @@
 from os import path
 import pytest
-from gendiff.cli import parse_args
 from gendiff.gendiff import generate_diff
 import json
 
@@ -73,14 +72,3 @@ def test_format_json():
     j1 = json.loads(res)
     j2 = json.load(open(path_current('json_result.json')))
     assert j1 == j2
-
-
-def test_parse_args():
-    params = {'first_file': 'file1',
-              'second_file': 'file2',
-              'format': 'stylish'}
-    args = parse_args(['--format', params['format'],
-                       params['first_file'],
-                       params['second_file']])
-    args_dict = vars(args)
-    assert params == args_dict
