@@ -19,19 +19,20 @@ def get_data(source):
 
 def get_inner_diff(old_data, new_data, root_key=''):
     children = []
-    keys = set(old_data.keys()) | set(new_data.keys())
-    for key in sorted(keys):
-        if old_data.get(key) is None:
-            children.append({const.KEY_KEY: key,
-                            const.KEY_STATUS: const.STATUS_NEW,
-                            const.KEY_VALUE:
-                                {const.VALUE_NEW: new_data.get(key)}})
-        elif new_data.get(key) is None:
-            children.append({const.KEY_KEY: key,
-                             const.KEY_STATUS: const.STATUS_DEL,
-                             const.KEY_VALUE:
-                                 {const.VALUE_DEL: old_data.get(key)}})
-        elif isinstance(old_data.get(key), dict) \
+    old_keys = set(old_data.keys())
+    new_keys = set(new_data.keys())
+    for key in new_keys - old_keys:
+        children.append({const.KEY_KEY: key,
+                         const.KEY_STATUS: const.STATUS_NEW,
+                         const.KEY_VALUE:
+                             {const.VALUE_NEW: new_data.get(key)}})
+    for key in old_keys - new_keys:
+        children.append({const.KEY_KEY: key,
+                         const.KEY_STATUS: const.STATUS_DEL,
+                         const.KEY_VALUE:
+                             {const.VALUE_DEL: old_data.get(key)}})
+    for key in old_keys & new_keys:
+        if isinstance(old_data.get(key), dict) \
                 and isinstance(new_data.get(key), dict):
             children.append(get_inner_diff(old_data.get(key),
                                            new_data.get(key), key))
@@ -47,7 +48,8 @@ def get_inner_diff(old_data, new_data, root_key=''):
                                  const.KEY_VALUE:
                                      {const.VALUE_DEL: old_data.get(key),
                                       const.VALUE_NEW: new_data.get(key)}})
-            children.sort(key=get_key)
+
+        children.sort(key=get_key)
 
     res = {const.KEY_KEY: root_key,
            const.KEY_CHILDREN: children}
