@@ -44,6 +44,7 @@ optional arguments:
   -h, --help            show this help message and exit
   -f FORMAT, --format FORMAT
                         set format of output
+```
 
 
 ### step 4

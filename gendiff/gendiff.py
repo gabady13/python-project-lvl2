@@ -51,6 +51,7 @@ def get_inner_diff(old_data, new_data, root_key=''):
                                  const.KEY_VALUE:
                                      {const.VALUE_DEL: old_data.get(key),
                                       const.VALUE_NEW: new_data.get(key)}})
+            children.sort(key=get_key)
 
     res = {const.KEY_KEY: root_key,
            const.KEY_CHILDREN: children}
