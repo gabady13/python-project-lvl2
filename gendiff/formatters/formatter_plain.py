@@ -1,9 +1,9 @@
-import gendiff.gendiff as gendiff
+import gendiff.constants as const
 
 DESCR_TEMPLATE = {
-    gendiff.STATUS_CHANGE: 'was updated. From {_DEL_} to {_NEW_}',
-    gendiff.STATUS_DEL: 'was removed',
-    gendiff.STATUS_NEW: 'was added with value: {_NEW_}'}
+    const.STATUS_CHANGE: 'was updated. From {_DEL_} to {_NEW_}',
+    const.STATUS_DEL: 'was removed',
+    const.STATUS_NEW: 'was added with value: {_NEW_}'}
 
 
 def get_plain(diff):
@@ -14,17 +14,17 @@ def get_plain(diff):
 
 def diff_to_list(diff, prefix=''):
     res = []
-    new_prefix = get_new_prefix(prefix, diff[gendiff.KEY_KEY])
-    if gendiff.KEY_CHILDREN not in diff:
+    new_prefix = get_new_prefix(prefix, diff[const.KEY_KEY])
+    if const.KEY_CHILDREN not in diff:
         values_to_string = {k: to_string(v) for k, v in
-                            diff[gendiff.KEY_VALUE].items()}
+                            diff[const.KEY_VALUE].items()}
 
-        descr = DESCR_TEMPLATE.get(diff[gendiff.KEY_STATUS],
+        descr = DESCR_TEMPLATE.get(diff[const.KEY_STATUS],
                                    '').format(**values_to_string)
         return ['{}\'{}\' {}'.format('Property ', new_prefix, descr)]
 
-    children = filter(lambda key_descr: gendiff.STATUS_STAY != key_descr.get(
-        gendiff.KEY_STATUS, None), diff[gendiff.KEY_CHILDREN])
+    children = filter(lambda key_descr: const.STATUS_STAY != key_descr.get(
+        const.KEY_STATUS, None), diff[const.KEY_CHILDREN])
     for child in children:
         res += diff_to_list(child, new_prefix)
     res.sort()

@@ -1,17 +1,7 @@
 import gendiff.reading as reading
 import gendiff.parsers as parsers
+import gendiff.constants as const
 
-KEY_KEY = '_KEY_'
-KEY_STATUS = '_STATUS_'
-KEY_VALUE = '_VALUE_'
-KEY_CHILDREN = '_CHILDREN_'
-STATUS_STAY = '_STAY_'
-STATUS_DEL = '_DEL_'
-STATUS_NEW = '_NEW_'
-STATUS_CHANGE = '_CHANGE_'
-VALUE_STAY = '_STAY_'
-VALUE_DEL = '_DEL_'
-VALUE_NEW = '_NEW_'
 
 from gendiff.formatters.make_format import format_diff  # noqa: E402
 
@@ -40,37 +30,40 @@ def get_inner_diff(old_data, new_data, root_key=''):
     old_keys = set(old_data.keys())
     new_keys = set(new_data.keys())
     for key in new_keys - old_keys:
-        children.append({KEY_KEY: key,
-                         KEY_STATUS: STATUS_NEW,
-                         KEY_VALUE: {VALUE_NEW: new_data[key]}})
+        children.append({const.KEY_KEY: key,
+                         const.KEY_STATUS: const.STATUS_NEW,
+                         const.KEY_VALUE:
+                             {const.VALUE_NEW: new_data[key]}})
     for key in old_keys - new_keys:
-        children.append({KEY_KEY: key,
-                         KEY_STATUS: STATUS_DEL,
-                         KEY_VALUE: {VALUE_DEL: old_data[key]}})
+        children.append({const.KEY_KEY: key,
+                         const.KEY_STATUS: const.STATUS_DEL,
+                         const.KEY_VALUE: {const.VALUE_DEL: old_data[key]}})
     for key in old_keys & new_keys:
         if isinstance(old_data[key], dict) and isinstance(new_data[key],
                                                           dict):
             stay_key = get_inner_diff(old_data[key], new_data[key], key)
         else:
-            stay_key = {KEY_KEY: key}
+            stay_key = {const.KEY_KEY: key}
             if old_data[key] == new_data[key]:
-                stay_key.update({KEY_STATUS: STATUS_STAY,
-                                 KEY_VALUE: {VALUE_STAY: old_data[key]}})
+                stay_key.update({const.KEY_STATUS: const.STATUS_STAY,
+                                 const.KEY_VALUE:
+                                     {const.VALUE_STAY: old_data[key]}})
             else:
-                stay_key.update({KEY_STATUS: STATUS_CHANGE,
-                                 KEY_VALUE: {VALUE_DEL: old_data[key],
-                                             VALUE_NEW: new_data[key]}})
+                stay_key.update({const.KEY_STATUS: const.STATUS_CHANGE,
+                                 const.KEY_VALUE:
+                                     {const.VALUE_DEL: old_data[key],
+                                      const.VALUE_NEW: new_data[key]}})
 
         children.append(stay_key)
         children.sort(key=get_key)
 
-    res = {KEY_KEY: root_key,
-           KEY_CHILDREN: children}
+    res = {const.KEY_KEY: root_key,
+           const.KEY_CHILDREN: children}
     return res
 
 
 def get_key(inner_diff):
-    return inner_diff[KEY_KEY]
+    return inner_diff[const.KEY_KEY]
 
 
 def get_parser(file_path):

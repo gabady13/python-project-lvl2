@@ -1,5 +1,5 @@
 from operator import itemgetter
-import gendiff.gendiff as gendiff
+import gendiff.constants as const
 
 
 def get_stylish(diff):
@@ -11,18 +11,18 @@ def get_stylish(diff):
 
 def diff_to_uniform_dict(diff):
     res = {}
-    current_key = diff[gendiff.KEY_KEY]
+    current_key = diff[const.KEY_KEY]
 
-    if gendiff.KEY_CHILDREN not in diff:
-        for status, value in diff[gendiff.KEY_VALUE].items():
+    if const.KEY_CHILDREN not in diff:
+        for status, value in diff[const.KEY_VALUE].items():
             res[status, current_key] = value
         return res
 
-    for child in diff[gendiff.KEY_CHILDREN]:
+    for child in diff[const.KEY_CHILDREN]:
         res.update(diff_to_uniform_dict(child))
 
     if current_key:
-        res = {(gendiff.VALUE_STAY, current_key): res}
+        res = {(const.VALUE_STAY, current_key): res}
     return res
 
 
@@ -45,9 +45,9 @@ def stylish_to_list(data, level=2):
 
 def format_key(key):
     if isinstance(key, tuple):
-        sign = {gendiff.VALUE_DEL: '-',
-                gendiff.VALUE_NEW: '+',
-                gendiff.VALUE_STAY: ' '}[key[0]]
+        sign = {const.VALUE_DEL: '-',
+                const.VALUE_NEW: '+',
+                const.VALUE_STAY: ' '}[key[0]]
 
         key_single = key[1]
     else:
