@@ -9,11 +9,7 @@ from gendiff.formatters.make_format import format_diff  # noqa: E402
 def generate_diff(file_old, file_new, out_format='stylish'):
     data_old = get_data(file_old)
     data_new = get_data(file_new)
-
-    inner_diff = get_inner_diff(data_old, data_new)
-    diff = format_diff(inner_diff, out_format)
-
-    return diff
+    return format_diff(get_inner_diff(data_old, data_new), out_format)
 
 
 def get_data(source):
@@ -23,7 +19,7 @@ def get_data(source):
 
 def get_inner_diff(old_data, new_data, root_key=''):
     children = []
-    keys = list(set(old_data.keys()) | set(new_data.keys()))
+    keys = set(old_data.keys()) | set(new_data.keys())
     for key in sorted(keys):
         if old_data.get(key) is None:
             children.append({const.KEY_KEY: key,
