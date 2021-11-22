@@ -37,20 +37,20 @@ def get_inner_diff(old_data, new_data, root_key=''):
                                  {const.VALUE_DEL: old_data.get(key)}})
         elif isinstance(old_data.get(key), dict) \
                 and isinstance(new_data.get(key), dict):
-            stay_key = get_inner_diff(old_data.get(key), new_data.get(key), key)
+            children.append(get_inner_diff(old_data.get(key),
+                                           new_data.get(key), key))
         else:
-            stay_key = {const.KEY_KEY: key}
             if old_data.get(key) == new_data.get(key):
-                stay_key.update({const.KEY_STATUS: const.STATUS_STAY,
+                children.append({const.KEY_KEY: key,
+                                 const.KEY_STATUS: const.STATUS_STAY,
                                  const.KEY_VALUE:
-                                     {const.VALUE_STAY: old_data[key]}})
+                                     {const.VALUE_STAY: old_data.get(key)}})
             else:
-                stay_key.update({const.KEY_STATUS: const.STATUS_CHANGE,
+                children.append({const.KEY_KEY: key,
+                                 const.KEY_STATUS: const.STATUS_CHANGE,
                                  const.KEY_VALUE:
                                      {const.VALUE_DEL: old_data.get(key),
                                       const.VALUE_NEW: new_data.get(key)}})
-            children.append(stay_key)
-            children.sort(key=get_key)
 
     res = {const.KEY_KEY: root_key,
            const.KEY_CHILDREN: children}

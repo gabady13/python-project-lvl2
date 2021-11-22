@@ -1,3 +1,5 @@
+# Generate diff
+
 ### Hexlet tests and linter status:
 [![Actions Status](https://github.com/gabady13/python-project-lvl2/workflows/hexlet-check/badge.svg)](https://github.com/gabady13/python-project-lvl2/actions)
 
@@ -7,6 +9,41 @@
 
 [![Actions Status](https://github.com/gabady13/python-project-lvl2/workflows/Python%20CI/badge.svg)](https://github.com/gabady13/python-project-lvl2/actions)
 
+
+Gendiff is a CLI utility for finding differences between configuration files.
+
+## Features
+
+- Suppported formats: YAML, JSON
+- Report generation as plain text, structured text or JSON
+- Can be used as CLI tool or external library
+
+## Usage
+
+### As external library
+
+```python
+from gendiff import generate_diff
+
+diff = generate_diff(filepath1, filepath2)
+```
+
+### As CLI tool
+
+```
+> gendiff --help
+usage: gendiff [-h] [-f FORMAT] first_file second_file
+
+Generate diff
+
+positional arguments:
+  first_file
+  second_file
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -f FORMAT, --format FORMAT
+                        set format of output
 
 ### step 4
 [![asciicast](https://asciinema.org/a/3bX0cMTdWjLcncXAHVS2SVgEA.svg)](https://asciinema.org/a/3bX0cMTdWjLcncXAHVS2SVgEA)
