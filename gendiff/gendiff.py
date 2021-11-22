@@ -21,16 +21,18 @@ def get_inner_diff(old_data, new_data, root_key=''):
     children = []
     old_keys = set(old_data.keys())
     new_keys = set(new_data.keys())
-    for key in new_keys - old_keys:
-        children.append({const.KEY_KEY: key,
-                         const.KEY_STATUS: const.STATUS_NEW,
-                         const.KEY_VALUE:
-                             {const.VALUE_NEW: new_data.get(key)}})
-    for key in old_keys - new_keys:
-        children.append({const.KEY_KEY: key,
-                         const.KEY_STATUS: const.STATUS_DEL,
-                         const.KEY_VALUE:
-                             {const.VALUE_DEL: old_data.get(key)}})
+    keys = set(old_data.keys()) | set(new_data.keys())
+    for key in sorted(keys):
+        if old_data.get(key) is None:
+            children.append({const.KEY_KEY: key,
+                             const.KEY_STATUS: const.STATUS_NEW,
+                             const.KEY_VALUE:
+                                 {const.VALUE_NEW: new_data.get(key)}})
+        elif new_data.get(key) is None:
+            children.append({const.KEY_KEY: key,
+                             const.KEY_STATUS: const.STATUS_DEL,
+                             const.KEY_VALUE:
+                                 {const.VALUE_DEL: old_data.get(key)}})
     for key in old_keys & new_keys:
         if isinstance(old_data.get(key), dict) \
                 and isinstance(new_data.get(key), dict):
