@@ -18,11 +18,7 @@ def generate_diff(file_old, file_new, out_format='stylish'):
 
 def get_data(source):
     parser = get_parser(source)
-    data = reading.read_file(source)
-    if not data:
-        raise ValueError('empty data in: {}'.format(source))
-    parsed = parser(data)
-    return parsed
+    return parser(reading.read_file(source))
 
 
 def get_inner_diff(old_data, new_data, root_key=''):
