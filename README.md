@@ -45,6 +45,7 @@ optional arguments:
   -f FORMAT, --format FORMAT
                         set format of output
 
+
 ### step 4
 [![asciicast](https://asciinema.org/a/3bX0cMTdWjLcncXAHVS2SVgEA.svg)](https://asciinema.org/a/3bX0cMTdWjLcncXAHVS2SVgEA)
 
