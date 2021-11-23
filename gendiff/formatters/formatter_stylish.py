@@ -3,8 +3,7 @@ import gendiff.constants as const
 
 
 def get_stylish(diff):
-    stylish_dict = diff_to_uniform_dict(diff)
-    list_data = stylish_to_list(stylish_dict)
+    list_data = stylish_to_list(diff_to_uniform_dict(diff))
     res = '{}\n{}\n{}'.format('{', '\n'.join(list_data), '}')
     return res
 
