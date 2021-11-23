@@ -17,44 +17,41 @@ def get_data(source):
     data = reading.read_file(source)
     if not data:
         raise ValueError('empty data in: {}'.format(source))
-    parsed = parser(data)
-    return parsed
+    return parser(data)
 
 
 def get_inner_diff(old_data, new_data, root_key=''):
     children = []
-    old_keys = set(old_data.keys())
-    new_keys = set(new_data.keys())
-    for key in new_keys - old_keys:
-        children.append({const.KEY_KEY: key,
-                         const.KEY_STATUS: const.STATUS_NEW,
-                         const.KEY_VALUE:
-                             {const.VALUE_NEW: new_data.get(key)}})
-    for key in old_keys - new_keys:
-        children.append({const.KEY_KEY: key,
-                         const.KEY_STATUS: const.STATUS_DEL,
-                         const.KEY_VALUE:
-                             {const.VALUE_DEL: old_data.get(key)}})
-    for key in old_keys & new_keys:
-        if isinstance(old_data.get(key), dict) \
-                and isinstance(new_data.get(key), dict):
-            children.append(get_inner_diff(old_data.get(key),
-                                           new_data.get(key), key))
+    all_keys = sorted(old_data.keys() | new_data.keys())
+
+    for key in all_keys:
+        value1 = old_data.get(key)
+        value2 = new_data.get(key)
+
+        if value1 == value2:
+            children.append({const.KEY_KEY: key,
+                             const.KEY_STATUS: const.STATUS_STAY,
+                             const.KEY_VALUE:
+                                 {const.VALUE_STAY: value1}})
+        elif key not in old_data:
+            children.append({const.KEY_KEY: key,
+                             const.KEY_STATUS: const.STATUS_NEW,
+                             const.KEY_VALUE:
+                                 {const.VALUE_NEW: value2}})
+        elif key not in new_data:
+            children.append({const.KEY_KEY: key,
+                             const.KEY_STATUS: const.STATUS_DEL,
+                             const.KEY_VALUE:
+                                 {const.VALUE_DEL: value1}})
+        elif isinstance(value1, dict) and isinstance(value2, dict):
+            children.append(get_inner_diff(value1,
+                                           value2, key))
         else:
-            if old_data.get(key) == new_data.get(key):
-                children.append({const.KEY_KEY: key,
-                                 const.KEY_STATUS: const.STATUS_STAY,
-                                 const.KEY_VALUE:
-                                     {const.VALUE_STAY: old_data.get(key)}})
-            else:
-                children.append({const.KEY_KEY: key,
-                                 const.KEY_STATUS: const.STATUS_CHANGE,
-                                 const.KEY_VALUE:
-                                     {const.VALUE_DEL: old_data.get(key),
-                                      const.VALUE_NEW: new_data.get(key)}})
-
-        children.sort(key=get_key)
-
+            children.append({const.KEY_KEY: key,
+                             const.KEY_STATUS: const.STATUS_CHANGE,
+                             const.KEY_VALUE:
+                                 {const.VALUE_DEL: old_data.get(key),
+                                  const.VALUE_NEW: new_data.get(key)}})
     res = {const.KEY_KEY: root_key,
            const.KEY_CHILDREN: children}
     return res
