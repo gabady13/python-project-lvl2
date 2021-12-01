@@ -1,6 +1,7 @@
 import gendiff.reading as reading
 import gendiff.parsers as parsers
 import gendiff.constants as const
+import os
 
 
 from gendiff.formatters.make_format import format_diff  # noqa: E402
@@ -9,15 +10,22 @@ from gendiff.formatters.make_format import format_diff  # noqa: E402
 def generate_diff(file_old, file_new, out_format='stylish'):
     data_old = get_data(file_old)
     data_new = get_data(file_new)
+    if not data_old or not data_new:
+        raise ValueError('Files is empty!')
+
     return format_diff(get_inner_diff(data_old, data_new), out_format)
 
 
 def get_data(source):
-    parser = get_parser(source)
-    data = reading.read_file(source)
-    if not data:
-        raise ValueError('empty data in: {}'.format(source))
-    return parser(data)
+    file_name, file_extension = os.path.splitext(source)
+    if file_extension in ['.json', '.yml', '.yaml']:
+        parser = get_parser(source)
+        file_data = parser(reading.read_file(source))
+    else:
+        raise ValueError('Wrong file format. '
+                         'Can use only .json or .yml/.yaml files')
+
+    return file_data
 
 
 def get_inner_diff(old_data, new_data, root_key=''):
