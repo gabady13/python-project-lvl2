@@ -11,7 +11,7 @@ def parse_yaml(data):
     return yaml.safe_load(data)
 
 
-def parse_args():
+def args():
     parser = argparse.ArgumentParser(description='Generate diff')
     parser.add_argument('-f', '--format',
                         metavar='FORMAT',
