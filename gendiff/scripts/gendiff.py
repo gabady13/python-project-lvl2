@@ -5,9 +5,10 @@ from gendiff.parsers import args
 
 def main():
     """Print diff between two files."""
-    print(generate_diff(args.first_file,
-                        args.second_file,
-                        args.format))
+    arg = args
+    print(generate_diff(arg.first_file,
+                        arg.second_file,
+                        arg.format))
 
 
 if __name__ == '__main__':
