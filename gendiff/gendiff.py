@@ -23,14 +23,12 @@ def get_data(source):
 
 
 def build_diff(old_data, new_data, root_key=''):
-
     children = []
     all_keys = sorted(old_data.keys() | new_data.keys())
 
     for key in all_keys:
         value1 = old_data.get(key)
         value2 = new_data.get(key)
-
         if value1 == value2:
             children.append({const.KEY_KEY: key,
                              const.KEY_STATUS: const.STATUS_STAY,
@@ -47,8 +45,7 @@ def build_diff(old_data, new_data, root_key=''):
                              const.KEY_VALUE:
                                  {const.VALUE_DEL: value1}})
         elif isinstance(value1, dict) and isinstance(value2, dict):
-            children.append(build_diff(value1,
-                                           value2, key))
+            children.append(build_diff(value1, value2, key))
         else:
             children.append({const.KEY_KEY: key,
                              const.KEY_STATUS: const.STATUS_CHANGE,
