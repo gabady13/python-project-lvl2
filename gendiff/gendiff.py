@@ -1,7 +1,5 @@
-import gendiff.reading as reading
 import gendiff.parsers as parsers
 import gendiff.constants as const
-import os
 
 
 from gendiff.formatters.make_format import format_diff  # noqa: E402
@@ -10,25 +8,22 @@ from gendiff.formatters.make_format import format_diff  # noqa: E402
 def generate_diff(file_old, file_new, out_format='stylish'):
     data_old = get_data(file_old)
     data_new = get_data(file_new)
-    if not data_old or not data_new:
-        raise ValueError('Files is empty!')
 
-    return format_diff(get_inner_diff(data_old, data_new), out_format)
+    return format_diff(build_diff(data_old, data_new), out_format)
 
 
 def get_data(source):
-    file_name, file_extension = os.path.splitext(source)
-    if file_extension in ['.json', '.yml', '.yaml']:
-        parser = get_parser(source)
-        file_data = parser(reading.read_file(source))
-    else:
-        raise ValueError('Wrong file format. '
-                         'Can use only .json or .yml/.yaml files')
+    parser = get_parser(source)
+    with open(source, mode='r') as opened_file:
+        data = opened_file.read()
+    if not data:
+        raise ValueError('Files is empty!')
 
-    return file_data
+    return parser(data)
 
 
-def get_inner_diff(old_data, new_data, root_key=''):
+def build_diff(old_data, new_data, root_key=''):
+
     children = []
     all_keys = sorted(old_data.keys() | new_data.keys())
 
@@ -52,7 +47,7 @@ def get_inner_diff(old_data, new_data, root_key=''):
                              const.KEY_VALUE:
                                  {const.VALUE_DEL: value1}})
         elif isinstance(value1, dict) and isinstance(value2, dict):
-            children.append(get_inner_diff(value1,
+            children.append(build_diff(value1,
                                            value2, key))
         else:
             children.append({const.KEY_KEY: key,
