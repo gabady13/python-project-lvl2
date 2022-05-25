@@ -22,3 +22,6 @@ test:
 
 run-test:
 	poetry run gendiff --format stylish tests/fixtures/nested_json/original.json tests/fixtures/nested_json/modified.json
+
+test-stylish:
+	poetry run gendiff --format stylish tests/fixtures/plain_json/original.json tests/fixtures/plain_json/modified.json

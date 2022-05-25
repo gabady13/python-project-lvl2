@@ -1,58 +1,70 @@
-from operator import itemgetter
 import gendiff.constants as const
 
 
 def get_stylish(diff):
-    list_data = stylish_to_list(diff_to_uniform_dict(diff))
-    res = '{}\n{}\n{}'.format('{', '\n'.join(list_data), '}')
-    return res
+    return '{}\n{}\n{}'.format('{', '\n'.
+                               join(stylish_to_list(diff)), '}')
 
 
-def diff_to_uniform_dict(diff):
-    res = {}
-    current_key = diff[const.KEY_KEY]
-
-    if const.KEY_CHILDREN not in diff:
-        for status, value in diff[const.KEY_VALUE].items():
-            res[status, current_key] = value
-        return res
-
-    for child in diff[const.KEY_CHILDREN]:
-        res.update(diff_to_uniform_dict(child))
-
-    if current_key:
-        res = {(const.VALUE_STAY, current_key): res}
-    return res
-
-
-def stylish_to_list(data, level=2):
+def stylish_to_list(data, level=2):  # noqa:C901
     res = []
     shift = ' ' * level
-    sorted_keys = sorted(list(data.keys()), key=itemgetter(1))
-    for key in sorted_keys:
-        value = data[key]
-        formatted_key = format_key(key)
-        if isinstance(value, dict):
-            res.append('{}{}: {}'.format(shift, formatted_key, '{'))
-            res = res + stylish_to_list(value, level + 4)
-            res.append('{}  {}'.format(shift, '}'))
-        else:
-            formatted_value = to_string(value)
-            res.append('{}{}:{}'.format(shift, formatted_key, formatted_value))
+    current_key = data[const.KEY_KEY]
+
+    if const.KEY_CHILDREN not in data:
+        for status, value in data[const.KEY_VALUE].items():
+            key_format = format_key(current_key, status)
+            if isinstance(value, dict):
+                res.append('{}{}: {}'.
+                           format(shift, key_format, '{'))
+                res = res + stylish_dict(value, level + 4)
+                res.append('{}  {}'.format(shift, '}'))
+            else:
+                formatted_value = to_string(value)
+                res.append('{}{}:{}'.
+                           format(shift, key_format, formatted_value))
+        return res
+
+    if current_key:
+        res.append('{}{}: {}'.format(shift, format_key(current_key), '{'))
+        for child in data[const.KEY_CHILDREN]:
+            res = res + stylish_to_list(child, level + 4)
+        res.append('{}  {}'.format(shift, '}'))
+    else:
+        for child in data[const.KEY_CHILDREN]:
+            res = res + stylish_to_list(child, level)
+
     return res
 
 
-def format_key(key):
-    if isinstance(key, tuple):
+def format_key(key, status=''):
+    if status:
         sign = {const.VALUE_DEL: '-',
                 const.VALUE_NEW: '+',
-                const.VALUE_STAY: ' '}[key[0]]
+                const.VALUE_STAY: ' '}[status]
 
-        key_single = key[1]
+        key_single = key
     else:
         sign = ' '
         key_single = key
     return '{} {}'.format(sign, key_single)
+
+
+def stylish_dict(data, level):
+    res = []
+    shift = ' ' * level
+
+    for key, value in data.items():
+        if isinstance(value, dict):
+            res.append('{}{}: {}'.format(shift, format_key(key), '{'))
+            res = res + stylish_dict(value, level + 4)
+            res.append('{}  {}'.format(shift, '}'))
+        else:
+            formatted_value = to_string(value)
+            res.append('{}{}:{}'.format(shift, format_key(key),
+                                        formatted_value))
+
+    return res
 
 
 def to_string(value):
