@@ -15,27 +15,43 @@ def path_current(*paths):
 
 
 SET_TESTING_DATA = [
-    (PLAIN_JSON_DIR, 'original.json', 'modified.json',
+    (PLAIN_JSON_DIR, PLAIN_JSON_DIR, 'original.json', 'modified.json',
      'styl_plain_result.txt', 'stylish'),
-    (PLAIN_YML_DIR, 'original.yml', 'modified.yml',
+    (PLAIN_YML_DIR, PLAIN_YML_DIR, 'original.yml', 'modified.yml',
      'styl_plain_result.txt', 'stylish'),
-    (NESTED_JSON_DIR, 'original.json', 'modified.json',
+    (NESTED_JSON_DIR, NESTED_JSON_DIR, 'original.json', 'modified.json',
      'styl_nested_result.txt', 'stylish'),
-    (NESTED_YML_DIR, 'original.yml', 'modified.yml',
+    (NESTED_YML_DIR, NESTED_YML_DIR, 'original.yml', 'modified.yml',
      'styl_nested_result.txt', 'stylish'),
-    (NESTED_JSON_DIR, 'original.json', 'modified.json',
-     'plain_result.txt', 'plain')]
+    (NESTED_JSON_DIR, NESTED_JSON_DIR, 'original.json', 'modified.json',
+     'plain_result.txt', 'plain'),
+    (PLAIN_YML_DIR, PLAIN_JSON_DIR, 'original.yml', 'modified.json',
+     'styl_plain_result.txt', 'stylish'),
+    (NESTED_YML_DIR, NESTED_JSON_DIR, 'original.yml', 'modified.json',
+     'styl_nested_result.txt', 'stylish'),
+    (NESTED_JSON_DIR, NESTED_YML_DIR, 'original.json', 'modified.yml',
+     'styl_nested_result.txt', 'stylish'),
+    (NESTED_JSON_DIR, NESTED_YML_DIR, 'original.json', 'modified.yml',
+     'plain_result.txt', 'plain'),
+    (NESTED_YML_DIR, NESTED_YML_DIR, 'original.yml', 'modified.yml',
+     'plain_result.txt', 'plain'),
+    (NESTED_YML_DIR, NESTED_JSON_DIR, 'original.yml', 'modified.json',
+     'plain_result.txt', 'plain')
+]
 
 
 @pytest.mark.parametrize(
-    'files_dir, path_origin, path_modified, path_diff, out_format',
+    'files_dir_origin, files_dir_modifi, '
+    'path_origin, path_modified, path_diff, out_format',
     SET_TESTING_DATA)
-def test_gendiff(files_dir, path_origin, path_modified, path_diff,
-                 out_format):
-    res = generate_diff(path_current(files_dir, path_origin),
-                        path_current(files_dir, path_modified),
+def test_gendiff(files_dir_origin, files_dir_modifi, path_origin,
+                 path_modified, path_diff, out_format):
+    res = generate_diff(path_current(files_dir_origin, path_origin),
+                        path_current(files_dir_modifi, path_modified),
                         out_format)
-    diff = open(path_current(path_diff)).read()
+    file = open(path_current(path_diff))
+    diff = file.read()
+    file.close()
     assert res == diff
 
 

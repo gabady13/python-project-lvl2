@@ -1,6 +1,5 @@
 import json
 import yaml
-import argparse
 
 
 def parse_json(data):
@@ -11,12 +10,21 @@ def parse_yaml(data):
     return yaml.safe_load(data)
 
 
-def parse_args():
-    parser = argparse.ArgumentParser(description='Generate diff')
-    parser.add_argument('-f', '--format',
-                        metavar='FORMAT',
-                        help='set format of output',
-                        default='stylish')
-    parser.add_argument('first_file')
-    parser.add_argument('second_file')
-    return parser.parse_args()
+def get_data(file_path):
+    reader = get_file_reader(file_path)
+    with open(file_path, mode='r') as opened_file:
+        data = opened_file.read()
+    if not data:
+        raise ValueError('Files is empty!')
+
+    return reader(data)
+
+
+def get_file_reader(file_path):
+    if '.json' in file_path:
+        parser = parse_json
+    elif '.yml' in file_path:
+        parser = parse_yaml
+    else:
+        raise ValueError('can\'t detect format for: {}'.format(file_path))
+    return parser
