@@ -2,6 +2,8 @@ from os import path
 import pytest
 from gendiff.gendiff import generate_diff
 import json
+import requests
+import gendiff.parsers as parser
 
 CURRENT_DIR = path.dirname(__file__)
 PLAIN_JSON_DIR = 'plain_json'

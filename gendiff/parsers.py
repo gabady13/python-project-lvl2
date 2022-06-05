@@ -10,12 +10,12 @@ def parse_yaml(data):
     return yaml.safe_load(data)
 
 
-def get_parser(format):
+def parse(data, format):
     if 'json' in format:
-        parser = parse_json
+        parser = parse_json(data)
     elif 'yml' in format\
             or 'yaml' in format:
-        parser = parse_yaml
+        parser = parse_yaml(data)
     else:
         raise ValueError('can\'t detect format for: {}'.format(format))
     return parser
