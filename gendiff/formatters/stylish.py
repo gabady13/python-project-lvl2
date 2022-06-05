@@ -22,7 +22,7 @@ def stylish_to_list(data, level=1):  # noqa:C901
                 res.append('{}  {}'.format(shift, '}'))
             else:
                 formatted_value = to_string(value)
-                res.append('{}{}:{}'.
+                res.append('{}{}: {}'.
                            format(shift, key_format, formatted_value))
         return res
 
@@ -62,8 +62,8 @@ def stylish_dict(data, level):
             res.append('{}  {}'.format(shift, '}'))
         else:
             formatted_value = to_string(value)
-            res.append('{}{}:{}'.format(shift, format_key(key),
-                                        formatted_value))
+            res.append('{}{}: {}'.format(shift, format_key(key),
+                                         formatted_value))
 
     return res
 
@@ -75,4 +75,4 @@ def to_string(value):
         value = 'false'
     elif value is None:
         value = 'null'
-    return ' {}'.format(value)
+    return '{}'.format(value)

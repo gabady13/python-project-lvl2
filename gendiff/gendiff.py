@@ -1,13 +1,28 @@
-import gendiff.parsers as parser
+import gendiff.parsers as parsers
 import gendiff.constants as const
 
 
+from os.path import splitext
 from gendiff.formatters.make_format import format_diff  # noqa: E402
 
 
+def read_file(file_path):
+    with open(file_path, mode='r') as opened_file:
+        data = opened_file.read()
+    if not data:
+        raise ValueError('Files is empty')
+    return data
+
+
+def get_data(file_path):
+    _, extension = splitext(file_path)
+    parser = parsers.get_parser(extension[1:].lower())
+    return parser(read_file(file_path))
+
+
 def generate_diff(file_path1, file_path2, out_format='stylish'):
-    data_path1 = parser.get_data(file_path1)
-    data_path2 = parser.get_data(file_path2)
+    data_path1 = get_data(file_path1)
+    data_path2 = get_data(file_path2)
 
     return format_diff(build_diff(data_path1, data_path2), out_format)
 
