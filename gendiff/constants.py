@@ -1,7 +1,7 @@
 """Common constants."""
 
 KEY_KEY = '_KEY_'
-KEY_STATUS = '_STATUS_'
+KEY_TYPE = '_TYPE_'
 KEY_VALUE = '_VALUE_'
 KEY_CHILDREN = '_CHILDREN_'
 STATUS_STAY = '_STAY_'

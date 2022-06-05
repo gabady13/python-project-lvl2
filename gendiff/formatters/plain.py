@@ -19,12 +19,12 @@ def diff_to_list(diff, prefix=''):
         values_to_string = {k: to_string(v) for k, v in
                             diff[const.KEY_VALUE].items()}
 
-        descr = DESCR_TEMPLATE.get(diff[const.KEY_STATUS],
+        descr = DESCR_TEMPLATE.get(diff[const.KEY_TYPE],
                                    '').format(**values_to_string)
         return ['{}\'{}\' {}'.format('Property ', new_prefix, descr)]
 
     children = filter(lambda key_descr: const.STATUS_STAY != key_descr.get(
-        const.KEY_STATUS, None), diff[const.KEY_CHILDREN])
+        const.KEY_TYPE, None), diff[const.KEY_CHILDREN])
     for child in children:
         res += diff_to_list(child, new_prefix)
     res.sort()
